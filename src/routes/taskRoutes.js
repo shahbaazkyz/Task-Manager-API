@@ -39,7 +39,6 @@ router.delete("/tasks/:id", auth, async (req, res) => {
 router.get("/tasks/:id", auth, async (req, res) => {
   const _id = req.params.id;
   try {
-    // const task = await Task.findById(_id);
     const task = await Task.findOne({ _id, owner: req.user._id });
     if (!task) {
       return res.status(404).send("task not found!");
@@ -64,8 +63,6 @@ router.get("/tasks", auth, async (req, res) => {
     sort[parts[0]] = parts[1] === "asc" ? 1 : -1;
   }
   try {
-    // const tasks = await Task.find({ owner: req.user._id });
-    // res.send(tasks)
     await req.user.populate({
       path: "tasks",
       match,
