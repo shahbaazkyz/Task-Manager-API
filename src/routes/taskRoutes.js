@@ -83,6 +83,36 @@ router.get("/tasks", auth, async (req, res) => {
 });
 
 
+//* Updating Task
+router.patch("/tasks/:id", auth, async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ["description", "completed"];
+  const isAllowed = updates.every((update) => allowedUpdates.includes(update));
+
+  if (!isAllowed) {
+    return res.status(400).send("Invalid updates!");
+  }
+
+  try {
+    const newTask = await Task.findOne({
+      _id: req.params.id,
+      owner: req.user._id,
+    });
+
+    if (!newTask) {
+      return res.status(404).send("Task not found!");
+    }
+
+    updates.forEach((update) => (newTask[update] = req.body[update]));
+
+    await newTask.save();
+    res.send(newTask);
+  } catch (error) {
+    res.status(400).send();
+  }
+});
+
+
 
 
 
