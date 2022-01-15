@@ -7,7 +7,6 @@ const { sendMail, cancellationMail } = require("../emails/account");
 
 const router = new express.Router();
 
-
 //* Creating user resource
 router.post("/users", async (req, res) => {
   const user = new User(req.body);

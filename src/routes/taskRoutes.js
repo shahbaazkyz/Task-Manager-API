@@ -19,7 +19,6 @@ router.post("/tasks", auth, async (req, res) => {
   }
 });
 
-
 //* Deleting task.
 router.delete("/tasks/:id", auth, async (req, res) => {
   try {
@@ -82,7 +81,6 @@ router.get("/tasks", auth, async (req, res) => {
   }
 });
 
-
 //* Updating Task
 router.patch("/tasks/:id", auth, async (req, res) => {
   const updates = Object.keys(req.body);
@@ -111,9 +109,5 @@ router.patch("/tasks/:id", auth, async (req, res) => {
     res.status(400).send();
   }
 });
-
-
-
-
 
 module.exports = router;
