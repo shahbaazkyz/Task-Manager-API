@@ -11,9 +11,9 @@ const router = new express.Router();
 router.post("/users", async (req, res) => {
   const user = new User(req.body);
   // console.log(sendMail(user.email, user.name));
-  try { 
+  try {
     await user.save();
-    sendMail(user.email, user.name)
+    await sendMail(user.email, user.name)
       .then((result) => console.log(result))
       .catch((e) => console.log(e));
     const token = await user.generateAuthToken();

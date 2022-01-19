@@ -2,9 +2,11 @@ const jwt = require("jsonwebtoken");
 const monoose = require("mongoose");
 const request = require("supertest");
 const User = require("../models/user");
+const { response } = require("./../app");
 const app = require("./../app");
 
 const userOneID = new monoose.Types.ObjectId();
+
 
 const userOne = {
   _id: userOneID,
@@ -20,7 +22,7 @@ beforeEach(async () => {
 });
 
 test("should signup new user", async () => {
-  await request(app)
+  const response = await request(app)
     .post("/users")
     .send({
       name: "testing",
@@ -28,16 +30,34 @@ test("should signup new user", async () => {
       pass: "1234534234",
     })
     .expect(201);
+
+  const user = await User.findById(response.body.user._id);
+
+  expect(user.pas).not.toBe("1234534234");
+  expect(user).not.toBeNull();
+
+  expect(response.body).toMatchObject({
+    user: {
+      name: "testing",
+      email: "testing@gmail.com",
+    },
+    token: user.tokens[0].token,
+  });
 });
 
 test("should Login existing user", async () => {
-  await request(app)
+  const response = await request(app)
     .post("/users/login")
     .send({
       email: userOne.email,
       pass: userOne.pass,
     })
     .expect(200);
+
+  const user = await User.findById(response.body.user._id);
+  const resToken = response.body.token;
+
+  expect(resToken).toBe(user.tokens[1].token);
 });
 
 test("should not Login nonexistent user", async () => {
@@ -63,11 +83,14 @@ test("should not get profile for unauthenticated user", async () => {
 });
 
 test("should delete user account!", async () => {
-  await request(app)
+  const response = await request(app)
     .delete("/users/me")
     .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
     .send()
     .expect(200);
+
+  const user = await User.findById(response.body._id);
+  expect(user).toBeNull();
 });
 
 test("should not delete account for unauthenticated user", async () => {
