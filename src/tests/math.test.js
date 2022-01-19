@@ -1,12 +1,9 @@
-const path = require("path");
 const {
   celsiusToFahrenheit,
   fahrenheitToCelsius,
   calcluateTip,
   add,
 } = require("../math");
-
-require("dotenv").config({ path: path.resolve(__dirname, "../../.env.test") });
 
 test("should Convert 32F° to 0C°", () => {
   const temp = fahrenheitToCelsius(32);
