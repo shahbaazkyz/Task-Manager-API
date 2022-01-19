@@ -36,7 +36,7 @@ const sendMail = async (email, name) => {
     const result = transporter.sendMail(mailOptions);
     return result;
   } catch (error) {
-    return error;
+    return "Email not sent.";
   }
 };
 
