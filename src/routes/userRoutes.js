@@ -10,9 +10,8 @@ const router = new express.Router();
 //* Creating user resource
 router.post("/users", async (req, res) => {
   const user = new User(req.body);
-  console.log(process.env.REFRESH_TOKEN);
   // console.log(sendMail(user.email, user.name));
-  try {
+  try { 
     await user.save();
     sendMail(user.email, user.name)
       .then((result) => console.log(result))
