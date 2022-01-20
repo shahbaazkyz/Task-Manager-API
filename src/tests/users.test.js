@@ -7,7 +7,6 @@ const app = require("./../app");
 
 const userOneID = new monoose.Types.ObjectId();
 
-
 const userOne = {
   _id: userOneID,
   name: "Ahmed",
@@ -96,3 +95,33 @@ test("should delete user account!", async () => {
 test("should not delete account for unauthenticated user", async () => {
   await request(app).delete("/users/me").send().expect(401);
 });
+
+test("should update valid user fields", async () => {
+  const response = await request(app)
+    .patch("/users/me")
+    .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+    .send({ name: "Shahbaz" })
+    .expect(200);
+
+  const user = await User.findById(userOneID);
+  expect(user.name).toBe("Shahbaz");
+});
+
+test("should not update invalid user fileds", async () => {
+  await request(app)
+    .patch("/users/me")
+    .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+    .send({ location: "karachi" })
+    .expect(400);
+});
+
+// test("should upload user avatar", async () => {
+//   await request(app)
+//     .post("/users/me")
+//     .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+//     .attach("avatar", "./fixtures/1231.png")
+//     .expect(200);
+
+//   // const user = await User.findById(userOneID);
+//   // expect(user.avatar).toEqual(expect.any(Buffer));
+// });
