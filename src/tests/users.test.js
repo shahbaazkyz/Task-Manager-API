@@ -29,6 +29,13 @@ test("should signup new user", async () => {
   });
 });
 
+test("should not signup user with invalid email/pass", async () => {
+  await request(app)
+    .post("/users")
+    .send({ email: "abc", name: "abc", pass: "123" })
+    .expect(400);
+});
+
 test("should Login existing user", async () => {
   const response = await request(app)
     .post("/users/login")
@@ -90,6 +97,13 @@ test("should update valid user fields", async () => {
 
   const user = await User.findById(userOneID);
   expect(user.name).toBe("Shahbaz");
+});
+
+test("should not update user if unauthenticated user", async () => {
+  await request(app)
+    .patch("/users/me")
+    .send({ name: "Shahbaz Khan" })
+    .expect(401);
 });
 
 test("should not update invalid user fileds", async () => {
